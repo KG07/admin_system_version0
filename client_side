@@ -1,0 +1,138 @@
+# Client Script runs only on the client
+# KrunkScript Copyright (C) Yendis Entertainment Pty Ltd
+# 
+# Add custom actions here
+
+# Runs when the game starts
+bool usingMenu = false;
+num playerSelected = 0;
+num commandSelected = 0;
+num playerShifted = 0;
+str[] admins = str["username1", "username2"];
+bool check = false;
+public action start() {
+
+}
+
+# Runs every game tick
+public action update(num delta) {
+    
+}
+
+# Add rendering logic in here
+public action render(num delta) {
+    if(usingMenu){
+        GAME.OVERLAY.drawRect(490, 90, 1020, 620, 0, "#000", 1);
+        GAME.OVERLAY.drawRect(500, 100, 1000, 600, 0, "#fff", 1);
+        GAME.OVERLAY.drawText("host commands by Khow!_Ha", 1000, 130, 0, 30, "center", "#000", 1);
+        obj[] players = GAME.PLAYERS.list();
+        GAME.OVERLAY.drawRect(545, 145, 910, 495, 0, "#ddd", 1);
+        for (num i = 0; i < ((lengthOf players) - playerShifted) && i < 14; i++) {
+            GAME.log(players);
+            GAME.OVERLAY.drawRect(550, 150 + (35 * i), 900, 30, 0, "#999", 1);
+            GAME.OVERLAY.drawText(players[i + playerShifted].username, 600, 170 + (35 * i), 0, 15, "left", "#000", 1);
+            if(i == (playerSelected - playerShifted)){
+                GAME.OVERLAY.drawRect(1342 + 35 * commandSelected, 152 + 35 * (playerSelected - playerShifted), 36, 26, 0, "#00f", 1);
+            }
+            GAME.OVERLAY.drawRect(1345, 155 + (35 * i), 30, 20, 0, "#0f0", 1);
+            GAME.OVERLAY.drawText("kill", 1360, 167 + (35 * i), 0, 11, "center", "#000", 1);
+            GAME.OVERLAY.drawRect(1380, 155 + (35 * i), 30, 20, 0, "#ff0", 1);
+            GAME.OVERLAY.drawText("kick", 1395, 167 + (35 * i), 0, 11, "center", "#000", 1);
+            GAME.OVERLAY.drawRect(1415, 155 + (35 * i), 30, 20, 0, "#f00", 1);
+            GAME.OVERLAY.drawText("ban", 1430, 167 + (35 * i), 0, 11, "center", "#000", 1);
+        }
+    }
+}
+
+# Player spawns in
+public action onPlayerSpawn(str id) {
+
+}
+
+# Player update
+public action onPlayerUpdate(str id, num delta, obj inputs) {
+    
+}
+
+# User pressed a key
+public action onKeyPress(str key, num code) {
+    obj player = GAME.PLAYERS.getSelf();
+    if(key == "0"){
+        check = false;
+        playerSelected = 0;
+        commandSelected = 0;
+        playerShifted = 0;
+        for(num i = 0; i < lengthOf admins; i++){
+            if(player.username == admins[i]){
+                check = true;
+            }
+        }
+        if(check){
+        usingMenu = !usingMenu;
+        }
+    }
+    if(usingMenu){
+        obj[] players = GAME.PLAYERS.list();
+        if(key == "7"){
+            if(playerSelected > 0){
+                playerSelected--;
+            }
+            if(playerShifted > playerSelected){
+                playerShifted--;
+            }
+        }
+        if(key == "8"){
+            if(playerSelected < (lengthOf players) - 1){
+                playerSelected++;
+            }
+            if(playerShifted <= playerSelected - 14){
+                playerShifted++;
+            }
+        }
+        if(key == "9"){
+            if(commandSelected < 2){
+                commandSelected++;
+            }
+            else{
+                commandSelected = 0;
+            }
+        }
+        if(key == "6"){
+            GAME.NETWORK.send(toStr commandSelected, {num playerSelected:  players[playerSelected].id});
+        }
+    }
+}
+
+# User released a key
+public action onKeyUp(str key, num code) {
+    
+}
+# User held a key
+public action onKeyHeld(str key, num code) {
+
+}
+
+# User clicked on screen
+public action onMouseClick(num button, num x, num y) {
+    
+}
+
+# User released clicked on screen
+public action onMouseUp(num button, num x, num y) {
+
+}
+
+# User scrolled on screen
+public action onMouseScroll(num dir) {
+
+}
+
+# User clicked a DIV (ID)
+public action onDIVClicked(str id) {
+
+}
+
+# Client receives network message
+public action onNetworkMessage(str id, dynamic obj data) {
+    
+}
