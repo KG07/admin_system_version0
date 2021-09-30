@@ -1,0 +1,59 @@
+# Server Script runs only on Hosted server & not in test mode
+# KrunkScript Copyright (C) Yendis Entertainment Pty Ltd
+# 
+# Add custom actions here
+
+# Runs when the game starts
+str[] admins = str["newromantics", "not_mamba"];
+bool check = false;
+public action start() {
+
+}
+
+# Runs every game tick
+public action update(num delta) {
+
+}
+
+# Player spawns in
+public action onPlayerSpawn(str id) {
+
+}
+
+# Player update
+public action onPlayerUpdate(str id, num delta, obj inputs) {
+
+}
+
+# Called from Custom Trigger Action
+public action onCustomTrigger(str playerID, str customParam) {
+
+}
+
+# Server receives network message
+public action onNetworkMessage(str id, dynamic obj data, str playerID) {
+	obj player = GAME.PLAYERS.findByID(data.playerSelected);
+	check = false;
+	obj[] players = GAME.PLAYERS.list();
+	for(num i = 0; i < lengthOf admins; i++){
+		if(player.username == admins[i]){
+			check = true;
+		}
+	}
+	if(!check){
+		if(id == "0"){
+			player.health -= 200;
+		}
+		if(id == "1"){
+			GAME.ADMIN.kick(data.playerSelected);
+		}
+		if(id == "2"){
+			GAME.ADMIN.ban(data.playerSelected);
+		}
+	}
+}
+
+# When a player leaves the server
+public action onPlayerLeave(str playerID) {
+
+}
